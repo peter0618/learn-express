@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const dotenv = require('dotenv');
 const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
 dotenv.config();
 const app = express();
@@ -27,6 +29,19 @@ app.use(session({
     },
     name: 'session-cookie',
 }));
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination(req, file, done) {
+            done(null, 'uploads/');
+        },
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname);
+            done(null, path.basename(file.originalname, ext) + Date.now() + ext);
+        },
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 app.use((req, res, next) => {
     console.log('모든 요청에 다 실행됩니다.');
@@ -59,11 +74,30 @@ app.get('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, '/index.html'));
 });
 
+// 단건 업로드
+// app.post('/upload', upload.single('image'), (req, res) => {
+//    console.log(req.file, req.body);
+//    res.send('ok');
+// });
+
+// 다건 업로드 (이외에도 upload.fields([{ name: 'image1' }, { name: 'image2' }]) 와 같은 방법으로 input 필드 여러개에 대해 받는 방법도 있음.)
+app.post('/upload', upload.array('images'), (req, res) => {
+    console.log(req.files, req.body);
+    res.send('ok');
+});
+
 // 에러 처리 미들웨어 입니다. 특별한 경우가 아니면 에러처리 미들웨어는 가장 아래에 위치하도록 합니다.
 app.use((err, req, res, next) => {
    console.error(err);
    res.status(500).send(err.message);
 });
+
+try {
+    fs.readdirSync('uploads');
+} catch (error) {
+    console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+    fs.mkdirSync('uploads');
+}
 
 app.listen(app.get('port'), ()=> {
     console.log(`${app.get('port')} 번 포트에서 대기 중`);
