@@ -58,7 +58,10 @@ app.use('/', indexRouter);
 app.use('/user', userRouter);
 
 app.use((req,res,next) => {
-    res.status(404).send('Not Found');
+    const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+    error.status = 404;
+    next(error);
+    // res.status(404).send('Not Found');
 })
 
 // app.get('/', (req, res, next) => {
@@ -103,10 +106,10 @@ app.post('/upload', upload.array('images'), (req, res) => {
 app.use((err, req, res, next) => {
    console.error(err);
    res.locals.message = err.message;
-   err.status = 500;
+   err.status = (err.status || 500);
    res.locals.error = err;
    // res.status(500).send(err.message);
-    res.status(500).render('error');
+    res.status(err.status).render('error');
 });
 
 try {
