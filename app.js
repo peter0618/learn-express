@@ -8,6 +8,8 @@ const multer = require('multer');
 const fs = require('fs');
 
 dotenv.config();
+const indexRouter = require('./routes');
+const userRouter = require('./routes/user');
 const app = express();
 app.set('port', process.env.PORT || 3000);
 
@@ -48,31 +50,38 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', (req, res, next) => {
-    // res.send('Hello, Express'); // text 로 직접 응답하기.
-    console.log(req.signedCookies.name);
-    // console.log(req.cookies.name); // signed cookie 를 사용하면 undefined
-   console.log('GET / 요청에서만 실행됩니다.');
-   next();
-}, (req, res) => {
-    // throw new Error('에러는 에러 처리 미들웨어로 갑니다.');
+app.use('/', indexRouter);
+app.use('/user', userRouter);
 
-    // 쿠키 셋팅 예제
-    // res.cookie('name','peter',
-    //     {
-    //         expires: new Date(Date.now() + 9000000),
-    //         httpOnly: true,
-    //         // secure: true,
-    //         signed: true,
-    //     }
-    // );
+app.use((req,res,next) => {
+    res.status(404).send('Not Found');
+})
 
-    console.log(req.session);
-    console.log(req.sessionID);
-    // req.session.name = 'peter'; // 세션 등록
-
-    res.sendFile(path.join(__dirname, '/index.html'));
-});
+// app.get('/', (req, res, next) => {
+//     // res.send('Hello, Express'); // text 로 직접 응답하기.
+//     console.log(req.signedCookies.name);
+//     // console.log(req.cookies.name); // signed cookie 를 사용하면 undefined
+//    console.log('GET / 요청에서만 실행됩니다.');
+//    next();
+// }, (req, res) => {
+//     // throw new Error('에러는 에러 처리 미들웨어로 갑니다.');
+//
+//     // 쿠키 셋팅 예제
+//     // res.cookie('name','peter',
+//     //     {
+//     //         expires: new Date(Date.now() + 9000000),
+//     //         httpOnly: true,
+//     //         // secure: true,
+//     //         signed: true,
+//     //     }
+//     // );
+//
+//     console.log(req.session);
+//     console.log(req.sessionID);
+//     // req.session.name = 'peter'; // 세션 등록
+//
+//     res.sendFile(path.join(__dirname, '/index.html'));
+// });
 
 // 단건 업로드
 // app.post('/upload', upload.single('image'), (req, res) => {
