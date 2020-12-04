@@ -6,18 +6,25 @@ const dotenv = require('dotenv');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
+const nunjucks = require('nunjucks');
 
 dotenv.config();
 const indexRouter = require('./routes');
 const userRouter = require('./routes/user');
 const app = express();
 app.set('port', process.env.PORT || 3000);
+app.set('view engine', 'html');
 
 app.use(morgan('dev')); // 요청과 응답에 대한 정보를 콘솔에 기록함. 예) GET / 500 6.435 ms - 50 ([HTTP 메서드] [주소] [HTTP 상태 코드] [응답 속도] - [응답 바이트])
 app.use('/', express.static(path.join(__dirname, 'public'))); // app.use('요청경로', express.static('실제경로')); 정적 파일 요청을 처리하기 위해 사용합니다.
 app.use(express.json()); // body-parser 설정
 app.use(express.urlencoded({extended: false})); // body-parser 설정 (extended false 면 querystring 모듈 사용, true 면 qs 모듈 사용. qs는 querystring 모듈의 확장판)
 // => 본문을 JSON 형태로 보내든, URL-encoded 형식으로 보내든 req.body 에 JSON 형태로 파싱해줌.
+
+nunjucks.configure('views', {
+    express: app,
+    watch: true,
+})
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
 // app.use(cookieParser());

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{title}}</title>
+</head>
+<body>
+<!--  외부에서 변수 가져와서 사용하기 -->
+  <h1>{{title}}</h1>
+  <p>Welcome to {{title}}</p>
+  <button class="{{title}}" type="submit">전송</button>
+  <input placeholder="{{title}} 연습" />
+
+<!-- 내부에 변수 정의하여 사용하기 -->
+  {% set node = 'Node.js' %}
+  {% set js = 'Javascript' %}
+  <p>{{node}}와 {{js}}</p>
+
+<!-- 이스케이핑 예제 -->
+  <p>{{'<strong>이스케이프</strong>'}}</p>
+  <p>{{'<strong>이스케이프하지 않음</strong>' | safe }}</p>
+
+<!-- 반복문 -->
+  <ul>
+<!--    {% set fruits = ['사과', '배', '오렌지', ' 바나나', '복숭아'] %}-->
+    {% for item in fruits %}
+    <li>{{loop.index}}번째 {{item}}</li>
+    {% endfor %}
+  </ul>
+
+<!-- 조건문 -->
+  {% if isLoggedIn %}
+  <div>로그인 되었습니다.</div>
+  {% else %}
+  <div>로그인이 필요합니다.</div>
+  {% endif %}
+<!-- 케이스문은 없어서 아래와 같이 처리합니다. -->
+  {% if fruit === 'apple' %}
+  <p>사과입니다.</p>
+  {% elif fruit === 'banana' %}
+  <p>바나나입니다.</p>
+  {% elif fruit === 'orange' %}
+  <p>오렌지입니다.</p>
+  {% else %}
+  <p>사과도 바나나도 오렌지도 아닙니다.</p>
+  {% endif %}
+<!-- {} 안에서 if문 사용하기 -->
+  <div>{{'참' if isLoggedIn}}</div>
+  <div>{{'참' if isLoggedIn else '거짓'}}</div>
+
+</body>
+</html>
