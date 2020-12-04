@@ -1,0 +1,65 @@
+doctype html
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/stylesheets/style.css')
+    body
+        div#login-button
+        .post-image
+        span#highlight
+        p.hidden.full
+        h1 hello!!
+
+        p Welcome to Express
+        button(type='submit') 전송
+
+        p
+          | 안녕하세요
+          | 여러줄을 입력합니다.
+          br
+          | 태그도 중간에 넣을 수 있습니다.
+
+        // 변수를 pug에서 받는 다양한 방법
+        h1= title
+        p Welcome to #{title}
+        button(class=title, type='submit') 전송
+        input(placeholder=title + ' 연습')
+
+        // 내부에 직접 변수 선언해서 쓰기
+        - const node = 'Node.js'
+        - const js = 'Javascript'
+        p #{node}와 #{js}
+
+        // 이스케이핑 예제. (=를 사용하면 이스케이프합니다.)
+        p= '<strong>이스케이프</strong>'
+        p!= '<strong>이스케이프하지 않음</strong>'
+
+        // 반복문 예제
+        ul
+          each fruit, index in ['사과', '배', '오렌지', '바나나', '복숭아']
+            li=(index + 1)+ '번째 ' + fruit
+
+        // 조건문 예제
+        if isLoggedIn
+            div 로그인 되었습니다.
+        else
+            div 로그인이 필요합니다.
+        case fruit
+            when 'apple'
+                p 사과입니다.
+            when 'banana'
+                p 바나나입니다.
+            when 'orange'
+                p 오렌지입니다.
+            default
+                p 사과도 바나나도 오렌지도 아닙니다.
+
+    style.
+        h1 {
+            font-size: 50px;
+        }
+    script.
+        // const message = 'Pug';
+        const message = '#{title}'; // 이렇게 하면 index.js 에서 넘겨준 title 을 사용할 수 있어요~
+        alert(message);
+

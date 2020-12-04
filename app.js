@@ -13,6 +13,10 @@ const userRouter = require('./routes/user');
 const app = express();
 app.set('port', process.env.PORT || 3000);
 
+// 뷰 템플릿 엔진을 설정합니다.(이 예제에서는 pug 와 express 를 연결합니다.)
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
 app.use(morgan('dev')); // 요청과 응답에 대한 정보를 콘솔에 기록함. 예) GET / 500 6.435 ms - 50 ([HTTP 메서드] [주소] [HTTP 상태 코드] [응답 속도] - [응답 바이트])
 app.use('/', express.static(path.join(__dirname, 'public'))); // app.use('요청경로', express.static('실제경로')); 정적 파일 요청을 처리하기 위해 사용합니다.
 app.use(express.json()); // body-parser 설정
@@ -98,7 +102,11 @@ app.post('/upload', upload.array('images'), (req, res) => {
 // 에러 처리 미들웨어 입니다. 특별한 경우가 아니면 에러처리 미들웨어는 가장 아래에 위치하도록 합니다.
 app.use((err, req, res, next) => {
    console.error(err);
-   res.status(500).send(err.message);
+   res.locals.message = err.message;
+   err.status = 500;
+   res.locals.error = err;
+   // res.status(500).send(err.message);
+    res.status(500).render('error');
 });
 
 try {
